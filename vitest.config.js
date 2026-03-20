@@ -1,0 +1,19 @@
+const { defineConfig } = require('vitest/config');
+
+module.exports = defineConfig({
+  test: {
+    environment: 'node',
+    globals: true,
+    setupFiles: ['./tests/setup.js'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html'],
+      reportsDirectory: './coverage',
+      include: [ 
+        'src/controllers/usuario.controller.js',
+        'src/services/usuario.service.js',
+        'src/routes/usuario.routes.js',
+        'src/repositories/usuario.repository.js']
+    }
+  }
+});
