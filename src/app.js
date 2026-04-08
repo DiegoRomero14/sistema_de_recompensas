@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const usuarioRoutes = require('./routes/usuario.routes');
 const reglaAcumulacionRoutes = require('./routes/reglaAcumulacion.routes');
 const compraRoutes = require('./routes/compra.routes');
+const reglaRedencionRoutes = require('./routes/reglaRedencion.routes');
 
 const app = express();
 
@@ -22,5 +23,6 @@ app.get('/', (req, res) => {
 app.use('/api/v1/usuarios', usuarioRoutes);
 app.use('/api/v1/reglas-acumulacion', reglaAcumulacionRoutes);
 app.use('/api/v1/compras', compraRoutes);
+app.use('/api/v1/reglas-redencion', reglaRedencionRoutes);
 
 module.exports = app;
