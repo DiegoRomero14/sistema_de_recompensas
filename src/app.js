@@ -6,6 +6,7 @@ const usuarioRoutes = require('./routes/usuario.routes');
 const reglaAcumulacionRoutes = require('./routes/reglaAcumulacion.routes');
 const compraRoutes = require('./routes/compra.routes');
 const reglaRedencionRoutes = require('./routes/reglaRedencion.routes');
+const redencionRoutes = require('./routes/redencion.routes');
 
 const app = express();
 
@@ -24,5 +25,6 @@ app.use('/api/v1/usuarios', usuarioRoutes);
 app.use('/api/v1/reglas-acumulacion', reglaAcumulacionRoutes);
 app.use('/api/v1/compras', compraRoutes);
 app.use('/api/v1/reglas-redencion', reglaRedencionRoutes);
+app.use('/api/v1/redenciones', redencionRoutes);
 
 module.exports = app;
