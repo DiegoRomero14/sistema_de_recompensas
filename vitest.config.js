@@ -33,7 +33,12 @@ module.exports = defineConfig({
         'src/controllers/redencion.controller.js',
         'src/services/redencion.service.js',
         'src/routes/redencion.routes.js',
-        'src/repositories/redencion.repository.js'
+        'src/repositories/redencion.repository.js',
+
+        'src/controllers/movimiento.controller.js',
+        'src/services/movimiento.service.js',
+        'src/routes/movimiento.routes.js',
+        'src/repositories/movimiento.repository.js'
       ]
     }
   }
