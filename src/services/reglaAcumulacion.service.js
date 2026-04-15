@@ -3,8 +3,14 @@ const reglaAcumulacionRepository = require('../repositories/reglaAcumulacion.rep
 const crearReglaAcumulacion = async (data) => {
   const { nombre, descripcion, monto_base, puntos_otorgados, estado } = data;
 
-  if (!nombre || !monto_base || !puntos_otorgados) {
-    throw new Error('Los campos nombre, monto_base y puntos_otorgados son obligatorios');
+  if (
+  !nombre ||
+  monto_base === undefined ||
+  monto_base === null ||
+  puntos_otorgados === undefined ||
+  puntos_otorgados === null
+  ) {
+  throw new Error('Los campos nombre, monto_base y puntos_otorgados son obligatorios');
   }
 
   if (isNaN(monto_base) || Number(monto_base) <= 0) {

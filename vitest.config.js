@@ -14,10 +14,26 @@ module.exports = defineConfig({
         'src/services/usuario.service.js',
         'src/routes/usuario.routes.js',
         'src/repositories/usuario.repository.js',
+
+        'src/controllers/reglaAcumulacion.controller.js',
+        'src/services/reglaAcumulacion.service.js',
+        'src/routes/reglaAcumulacion.routes.js',
+        'src/repositories/reglaAcumulacion.repository.js',
+
+        'src/controllers/compra.controller.js',
+        'src/services/compra.service.js',
+        'src/routes/compra.routes.js',
+        'src/repositories/compra.repository.js',
+
         'src/controllers/reglaRedencion.controller.js',
         'src/services/reglaRedencion.service.js',
         'src/routes/reglaRedencion.routes.js',
-        'src/repositories/reglaRedencion.repository.js'
+        'src/repositories/reglaRedencion.repository.js',
+
+        'src/controllers/redencion.controller.js',
+        'src/services/redencion.service.js',
+        'src/routes/redencion.routes.js',
+        'src/repositories/redencion.repository.js'
       ]
     }
   }
