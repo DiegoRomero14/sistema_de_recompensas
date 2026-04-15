@@ -9,11 +9,16 @@ module.exports = defineConfig({
       provider: 'v8',
       reporter: ['text', 'html'],
       reportsDirectory: './coverage',
-      include: [ 
+      include: [
         'src/controllers/usuario.controller.js',
         'src/services/usuario.service.js',
         'src/routes/usuario.routes.js',
-        'src/repositories/usuario.repository.js']
+        'src/repositories/usuario.repository.js',
+        'src/controllers/reglaRedencion.controller.js',
+        'src/services/reglaRedencion.service.js',
+        'src/routes/reglaRedencion.routes.js',
+        'src/repositories/reglaRedencion.repository.js'
+      ]
     }
   }
 });
