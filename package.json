@@ -8,7 +8,8 @@
     "start": "node src/server.js",
     "test": "vitest",
     "test:watch": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "build": "npm run test"
   },
   "keywords": [],
   "author": "",
@@ -19,10 +20,12 @@
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "morgan": "^1.10.1",
-    "pg": "^8.20.0"
+    "pg": "^8.20.0",
+    "tsc": "^2.0.4"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "^4.1.0",
+    "@vitest/coverage-v8": "^4.1.4",
+    "jest": "^30.3.0",
     "nodemon": "^3.1.14",
     "supertest": "^7.2.2",
     "vitest": "^4.1.0"
