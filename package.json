@@ -9,7 +9,7 @@
     "test": "vitest",
     "test:watch": "vitest",
     "coverage": "vitest run --coverage",
-    "build": "tsc"
+    "build": "npm run test"
   },
   "keywords": [],
   "author": "",
