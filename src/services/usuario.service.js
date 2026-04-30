@@ -131,8 +131,32 @@ const iniciarSesion = async (data = {}) => {
   };
 };
 
-const listarUsuarios = async () => {
-  return await usuarioRepository.listarUsuarios();
+const normalizarEstadoFiltro = (estado) => {
+  if (estado === undefined || estado === null || estado === '') {
+    return undefined;
+  }
+
+  const estadoNormalizado = String(estado).trim().toLowerCase();
+
+  if (['true', 'activo', 'activos', '1'].includes(estadoNormalizado)) {
+    return true;
+  }
+
+  if (['false', 'inactivo', 'inactivos', '0'].includes(estadoNormalizado)) {
+    return false;
+  }
+
+  return undefined;
+};
+
+const normalizarFiltrosUsuarios = (filtros = {}) => ({
+  buscar: filtros.buscar || filtros.q || '',
+  tipo_documento: filtros.tipo_documento || '',
+  estado: normalizarEstadoFiltro(filtros.estado)
+});
+
+const listarUsuarios = async (filtros = {}) => {
+  return await usuarioRepository.listarUsuarios(normalizarFiltrosUsuarios(filtros));
 };
 
 const obtenerUsuarioPorId = async (id) => {

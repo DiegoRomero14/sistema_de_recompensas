@@ -8,6 +8,7 @@ const camposPublicosUsuario = `
   u.correo,
   u.telefono,
   LOWER(COALESCE(rol_actual.nombre, 'ADMINISTRADOR')) AS rol,
+  COALESCE(s.saldo_actual, 0)::bigint AS saldo_actual,
   u.estado,
   u.fecha_creacion
 `;
@@ -21,6 +22,7 @@ const camposPrivadosUsuario = `
   u.telefono,
   LOWER(COALESCE(rol_actual.nombre, 'ADMINISTRADOR')) AS rol,
   u.contrasena_hash,
+  COALESCE(s.saldo_actual, 0)::bigint AS saldo_actual,
   u.estado,
   u.fecha_creacion
 `;
@@ -36,12 +38,17 @@ const joinRolActual = `
   ) rol_actual ON TRUE
 `;
 
+const joinSaldo = `
+  LEFT JOIN saldos_puntos s ON s.usuario_id = u.id
+`;
+
 const obtenerUsuarioPublicoPorId = async (id, connection = pool) => {
   const query = `
     SELECT
       ${camposPublicosUsuario}
     FROM usuarios u
     ${joinRolActual}
+    ${joinSaldo}
     WHERE u.id = $1;
   `;
 
@@ -128,16 +135,42 @@ const crearUsuario = async ({
   }
 };
 
-const listarUsuarios = async () => {
+const listarUsuarios = async (filtros = {}) => {
+  const condiciones = [];
+  const valores = [];
+
+  if (filtros.buscar) {
+    valores.push(`%${String(filtros.buscar).trim()}%`);
+    condiciones.push(`(
+      u.nombre ILIKE $${valores.length}
+      OR u.correo ILIKE $${valores.length}
+      OR u.numero_documento ILIKE $${valores.length}
+      OR u.id::text ILIKE $${valores.length}
+    )`);
+  }
+
+  if (filtros.tipo_documento) {
+    valores.push(String(filtros.tipo_documento).trim());
+    condiciones.push(`u.tipo_documento = $${valores.length}`);
+  }
+
+  if (typeof filtros.estado === 'boolean') {
+    valores.push(filtros.estado);
+    condiciones.push(`u.estado = $${valores.length}`);
+  }
+
+  const where = condiciones.length > 0 ? `WHERE ${condiciones.join(' AND ')}` : '';
   const query = `
     SELECT
       ${camposPublicosUsuario}
     FROM usuarios u
     ${joinRolActual}
+    ${joinSaldo}
+    ${where}
     ORDER BY u.id DESC;
   `;
 
-  const { rows } = await pool.query(query);
+  const { rows } = await pool.query(query, valores);
   return rows;
 };
 
@@ -151,6 +184,7 @@ const buscarPorNumeroDocumento = async (numero_documento) => {
       ${camposPrivadosUsuario}
     FROM usuarios u
     ${joinRolActual}
+    ${joinSaldo}
     WHERE u.numero_documento = $1;
   `;
 
@@ -164,6 +198,7 @@ const buscarPorCorreo = async (correo) => {
       ${camposPrivadosUsuario}
     FROM usuarios u
     ${joinRolActual}
+    ${joinSaldo}
     WHERE u.correo = $1;
   `;
 

@@ -208,6 +208,77 @@ const obtenerAuditoriaSaldo = async () => {
   return rows[0];
 };
 
+const obtenerNotificaciones = async () => {
+  const query = `
+    WITH novedades AS (
+      SELECT
+        ('usuario-' || u.id)::text AS id,
+        'usuario'::text AS tipo,
+        'Nuevo usuario registrado'::text AS titulo,
+        (u.nombre || ' se registro como ' || LOWER(COALESCE(rol_actual.nombre, 'ADMINISTRADOR')))::text AS detalle,
+        u.fecha_creacion AS fecha
+      FROM usuarios u
+      LEFT JOIN LATERAL (
+        SELECT r.nombre
+        FROM usuarios_roles ur
+        INNER JOIN roles r ON r.id = ur.rol_id
+        WHERE ur.usuario_id = u.id
+        ORDER BY ur.fecha_asignacion DESC, ur.id DESC
+        LIMIT 1
+      ) rol_actual ON TRUE
+
+      UNION ALL
+
+      SELECT
+        ('movimiento-' || m.id)::text AS id,
+        LOWER(m.tipo_movimiento)::text AS tipo,
+        CASE
+          WHEN m.tipo_movimiento = 'REDENCION' THEN 'Redencion registrada'
+          ELSE 'Puntos acumulados'
+        END::text AS titulo,
+        (
+          u.nombre ||
+          CASE
+            WHEN m.tipo_movimiento = 'REDENCION' THEN ' redimio '
+            ELSE ' acumulo '
+          END ||
+          m.puntos || ' pts en ' || COALESCE(NULLIF(TRIM(m.origen), ''), 'Sin origen')
+        )::text AS detalle,
+        m.fecha_movimiento AS fecha
+      FROM movimientos_puntos m
+      INNER JOIN usuarios u ON u.id = m.usuario_id
+      WHERE u.estado = TRUE
+
+      UNION ALL
+
+      SELECT
+        ('regla-acumulacion-' || ra.id)::text AS id,
+        'regla_acumulacion'::text AS tipo,
+        'Regla de acumulacion creada'::text AS titulo,
+        ra.nombre::text AS detalle,
+        ra.fecha_creacion AS fecha
+      FROM reglas_acumulacion ra
+
+      UNION ALL
+
+      SELECT
+        ('regla-redencion-' || rr.id)::text AS id,
+        'regla_redencion'::text AS tipo,
+        'Regla de redencion creada'::text AS titulo,
+        rr.nombre::text AS detalle,
+        rr.fecha_creacion AS fecha
+      FROM reglas_redencion rr
+    )
+    SELECT id, tipo, titulo, detalle, fecha
+    FROM novedades
+    ORDER BY fecha DESC, id DESC
+    LIMIT 8;
+  `;
+
+  const { rows } = await pool.query(query);
+  return rows;
+};
+
 const obtenerResumenAdmin = async () => {
   const [
     metricas,
@@ -215,14 +286,16 @@ const obtenerResumenAdmin = async () => {
     distribucionTransacciones,
     topClientes,
     movimientosRecientes,
-    auditoriaSaldo
+    auditoriaSaldo,
+    notificaciones
   ] = await Promise.all([
     obtenerMetricas(),
     obtenerAcumulacionMensual(),
     obtenerDistribucionTransacciones(),
     obtenerTopClientes(),
     obtenerMovimientosRecientes(),
-    obtenerAuditoriaSaldo()
+    obtenerAuditoriaSaldo(),
+    obtenerNotificaciones()
   ]);
 
   return {
@@ -231,7 +304,8 @@ const obtenerResumenAdmin = async () => {
     distribucionTransacciones,
     topClientes,
     movimientosRecientes,
-    auditoriaSaldo
+    auditoriaSaldo,
+    notificaciones
   };
 };
 

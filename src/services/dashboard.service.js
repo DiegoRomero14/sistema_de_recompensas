@@ -86,6 +86,13 @@ const obtenerResumenAdmin = async () => {
       estado: 'Completado',
       fecha_movimiento: movimiento.fecha_movimiento
     })),
+    notificaciones: (resumen.notificaciones || []).map((notificacion) => ({
+      id: notificacion.id,
+      tipo: notificacion.tipo,
+      titulo: notificacion.titulo,
+      detalle: notificacion.detalle,
+      fecha: notificacion.fecha
+    })),
     auditoria: {
       saldo_total: saldoTotal,
       valor_equivalente: Number((saldoTotal * 0.01).toFixed(2)),

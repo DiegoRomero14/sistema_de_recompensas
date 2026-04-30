@@ -60,7 +60,7 @@ const crearUsuario = async (req, res) => {
 
 const listarUsuarios = async (req, res) => {
   try {
-    const usuarios = await usuarioService.listarUsuarios();
+    const usuarios = await usuarioService.listarUsuarios(req.query);
 
     return res.status(200).json({
       ok: true,
